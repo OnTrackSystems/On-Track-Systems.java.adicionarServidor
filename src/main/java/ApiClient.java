@@ -6,16 +6,17 @@ import java.net.http.HttpResponse;
 public class ApiClient {
     static String ipServidor = "localhost";
 
-    public static HttpResponse<String> autenticarUsuario(String emailUsuario, String senhaUsuario) {
+    public static HttpResponse<String> autenticarUsuario(String json) {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/usuarios/autenticar/%s/%s", ipServidor, emailUsuario, senhaUsuario);
+            String url = String.format("http://%s:3333/usuarios/autenticar", ipServidor);
             URI uri = URI.create(url);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(uri)
-                    .GET()
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -53,7 +54,7 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/maquina/adicionarServidor", ipServidor);
+            String url = String.format("http://%s:3333/servidores/adicionarServidor", ipServidor);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))

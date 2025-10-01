@@ -19,7 +19,9 @@ public class Main {
             System.out.print("Informe sua senha: ");
             String senhaUsuario = scanner.nextLine();
 
-            HttpResponse<String> response = ApiClient.autenticarUsuario(emailUsuario, senhaUsuario);
+            String jsonUsuarioCredenciais = String.format("{\"emailServer\": \"%s\", \"senhaServer\": \"%s\"}", emailUsuario, senhaUsuario);
+
+            HttpResponse<String> response = ApiClient.autenticarUsuario(jsonUsuarioCredenciais);
             body = response.body();
 
             if(body.equals("Email e/ou senha inválido(s)")) {
