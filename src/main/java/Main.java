@@ -36,6 +36,10 @@ public class Main {
         }
     }
 
+    public static void adicionarGaragem() {
+
+    }
+
     public static void adicionarServidor(String idEmpresa, String uuid) {
         Scanner scanner = new Scanner(System.in);
 
@@ -103,8 +107,8 @@ public class Main {
             }
         } else {
             String uuid = Uuid.criarUuid();
+
             adicionarServidor(idEmpresa, uuid);
         }
-
     }
 }

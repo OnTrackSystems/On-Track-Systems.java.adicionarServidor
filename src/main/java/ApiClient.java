@@ -4,7 +4,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ApiClient {
-    static String ipServidor = "localhost";
+    static String ipServidor = "98.81.127.66";
 
     public static HttpResponse<String> autenticarUsuario(String json) {
         try {
@@ -32,7 +32,9 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/servidores/buscarServidorUUID/%s", ipServidor, uuid);
+            System.out.println("buscando servidor uuid");
+
+            String url = String.format("http://%s:3333/maquina/buscarServidorUUID/%s", ipServidor, uuid);
             URI uri = URI.create(url);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -54,7 +56,7 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/servidores/adicionarServidor", ipServidor);
+            String url = String.format("http://%s:3333/maquina/adicionarServidor", ipServidor);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -76,7 +78,7 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/servidores/atualizarServidor", ipServidor);
+            String url = String.format("http://%s:3333/maquina/atualizarServidor", ipServidor);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
