@@ -96,6 +96,27 @@ public class ApiClient {
         }
     }
 
+    public static HttpResponse<String> verificarGaragemNome(int idGaragem) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            String url = String.format("http://%s:%s/garagens/verificarGaragemId/%s", ipServidor, portaServidor, idGaragem);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri((URI.create(url)))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static HttpResponse<String> cadastrarGaragem(String json) {
         try {
             HttpClient client = HttpClient.newHttpClient();

@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.http.HttpResponse;
@@ -98,14 +97,6 @@ public class Garagem {
         return this.nome;
     }
 
-    public double getLatitude() {
-        return this.latitude;
-    }
-
-    public double getLongitude() {
-        return this.longitude;
-    }
-
     public static void main(String[] args) throws Exception{
         Scanner scanner = new Scanner(System.in);
 
@@ -129,6 +120,15 @@ public class Garagem {
                 int numeroGaragem = Integer.parseInt(texto);
 
                 Garagem garagem = retornarGaragem(garagensEncontradas.get(numeroGaragem - 1));
+
+                boolean verificarGaragem = Boolean.parseBoolean(ApiClient.verificarGaragemNome(garagem.getIdGaragem()).body());
+                System.out.println(verificarGaragem);
+
+                if(verificarGaragem) {
+                    System.out.printf("\nGaragem %s já cadastrada!\n", garagem.getNome());
+                    continue;
+                }
+
                 String json = new Gson().toJson(garagem);
 
                 int idEmpresa = 1;
