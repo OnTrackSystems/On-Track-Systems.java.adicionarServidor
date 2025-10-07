@@ -1,5 +1,10 @@
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -124,8 +129,18 @@ public class Garagem {
                 int numeroGaragem = Integer.parseInt(texto);
 
                 Garagem garagem = retornarGaragem(garagensEncontradas.get(numeroGaragem - 1));
+                String json = new Gson().toJson(garagem);
 
-                System.out.println(garagem.getNome());
+                int idEmpresa = 1;
+                JsonObject jsonGaragem = JsonParser.parseString(json).getAsJsonObject();
+                jsonGaragem.addProperty("idEmpresa", idEmpresa);
+
+                json = new Gson().toJson(jsonGaragem);
+
+                HttpResponse<String> response = ApiClient.cadastrarGaragem(json);
+
+                System.out.println("\n" + response.body());
+
                 break;
             }
 

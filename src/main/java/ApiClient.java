@@ -4,13 +4,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ApiClient {
-    static String ipServidor = "98.81.127.66";
+    static String ipServidor = "localhost";
+    static String portaServidor = "3333";
 
     public static HttpResponse<String> autenticarUsuario(String json) {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/usuarios/autenticar", ipServidor);
+            String url = String.format("http://%s:%s/usuarios/autenticar", ipServidor, portaServidor);
             URI uri = URI.create(url);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -34,7 +35,7 @@ public class ApiClient {
 
             System.out.println("buscando servidor uuid");
 
-            String url = String.format("http://%s:3333/maquina/buscarServidorUUID/%s", ipServidor, uuid);
+            String url = String.format("http://%s:%s/maquina/buscarServidorUUID/%s", ipServidor, portaServidor, uuid);
             URI uri = URI.create(url);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -56,7 +57,7 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/maquina/adicionarServidor", ipServidor);
+            String url = String.format("http://%s:%s/maquina/adicionarServidor", ipServidor, portaServidor);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -78,7 +79,7 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            String url = String.format("http://%s:3333/maquina/atualizarServidor", ipServidor);
+            String url = String.format("http://%s:%s/maquina/atualizarServidor", ipServidor, portaServidor);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -90,6 +91,27 @@ public class ApiClient {
 
             return response;
         } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static HttpResponse<String> cadastrarGaragem(String json) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            String url = String.format("http://%s:%s/garagens/adicionarGaragem", ipServidor, portaServidor);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
