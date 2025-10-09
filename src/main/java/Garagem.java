@@ -1,9 +1,5 @@
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -95,56 +91,5 @@ public class Garagem {
 
     public String getNome() {
         return this.nome;
-    }
-
-    public static void main(String[] args) throws Exception{
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Servidor ainda não cadastrado. Vamos primeiramente efetuar o cadastro desta garagem.");
-
-        System.out.print("Procure pelo nome desta garagem pressionando ENTER (digite ao menos 3 caracteres): ");
-        String nomeGaragem = scanner.nextLine();
-        ArrayList<String> garagensEncontradas = buscarGaragensNome(nomeGaragem);
-
-        while(true) {
-            System.out.print("\nDigite o número da garagem para cadastrar ou pesquise novamente: ");
-
-            String texto = scanner.nextLine();
-
-            if(texto.isEmpty()) {
-                System.out.println("Entrada inválida!");
-                continue;
-            }
-
-            if(isNumeric(texto)) {
-                int numeroGaragem = Integer.parseInt(texto);
-
-                Garagem garagem = retornarGaragem(garagensEncontradas.get(numeroGaragem - 1));
-
-                boolean verificarGaragem = Boolean.parseBoolean(ApiClient.verificarGaragemNome(garagem.getIdGaragem()).body());
-                System.out.println(verificarGaragem);
-
-                if(verificarGaragem) {
-                    System.out.printf("\nGaragem %s já cadastrada!\n", garagem.getNome());
-                    continue;
-                }
-
-                String json = new Gson().toJson(garagem);
-
-                int idEmpresa = 1;
-                JsonObject jsonGaragem = JsonParser.parseString(json).getAsJsonObject();
-                jsonGaragem.addProperty("idEmpresa", idEmpresa);
-
-                json = new Gson().toJson(jsonGaragem);
-
-                HttpResponse<String> response = ApiClient.cadastrarGaragem(json);
-
-                System.out.println("\n" + response.body());
-
-                break;
-            }
-
-            buscarGaragensNome(texto);
-        }
     }
 }

@@ -33,8 +33,6 @@ public class ApiClient {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            System.out.println("buscando servidor uuid");
-
             String url = String.format("http://%s:%s/maquina/buscarServidorUUID/%s", ipServidor, portaServidor, uuid);
             URI uri = URI.create(url);
 
