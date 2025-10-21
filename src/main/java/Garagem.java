@@ -1,10 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Garagem {
-    private static final File arquivoGaragens = new File("src/data/garagens.csv");
     private int idGaragem;
     private String nome;
     private double latitude;
@@ -16,11 +17,20 @@ public class Garagem {
         this.latitude = latitude;
         this. longitude = longitude;
     }
+    private static Scanner getScannerGaragens() throws FileNotFoundException {
+        InputStream resourceStream = Garagem.class.getResourceAsStream("/data/garagens.csv");
+        if (resourceStream != null) {
+            return new Scanner(new InputStreamReader(resourceStream));
+        }
+
+        File arquivoGaragens = new File("src/main/resources/data/garagens.csv");
+        return new Scanner(arquivoGaragens);
+    }
 
     public static ArrayList<String> buscarGaragensNome(String texto) {
         ArrayList<String> nomesGaragens = new ArrayList<>();
 
-        try(Scanner scanner = new Scanner(arquivoGaragens)) {
+        try(Scanner scanner = getScannerGaragens()) {
             scanner.nextLine();
             while(scanner.hasNextLine()) {
                 String[] campos = scanner.nextLine().split(",");
@@ -52,7 +62,7 @@ public class Garagem {
     }
 
     public static Garagem retornarGaragem(String nome) {
-        try(Scanner scanner = new Scanner(arquivoGaragens)) {
+        try(Scanner scanner = getScannerGaragens()) {
             scanner.nextLine();
 
             while(scanner.hasNextLine()) {
