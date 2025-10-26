@@ -16,10 +16,10 @@ public class Uuid {
         }
     }
 
-    public static String criarUuid() {
+    public static String criarUuid(String nomeGaragem) {
         String uuid = UUID.randomUUID().toString();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
-            writer.write(uuid);
+            writer.write(uuid + "," + nomeGaragem);
             return uuid;
         } catch(IOException e) {
             throw new RuntimeException("Falha ao salvar o UUID no arquivo");

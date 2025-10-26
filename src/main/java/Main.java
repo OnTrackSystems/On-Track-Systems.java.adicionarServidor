@@ -35,7 +35,7 @@ public class Main {
         }
     }
 
-    public static long adicionarGaragem(String idEmpresa) {
+    public static ArrayList<String> adicionarGaragem(String idEmpresa) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("\nServidor ainda não cadastrado. Vamos primeiramente efetuar o cadastro desta garagem.");
@@ -60,7 +60,6 @@ public class Main {
                 Garagem garagem = Garagem.retornarGaragem(garagensEncontradas.get(numeroGaragem - 1));
 
                 boolean verificarGaragem = Boolean.parseBoolean(ApiClient.verificarGaragemNome(garagem.getIdGaragem()).body());
-                System.out.println(verificarGaragem);
 
                 if(verificarGaragem) {
                     System.out.printf("\nGaragem %s já cadastrada!\n", garagem.getNome());
@@ -78,7 +77,11 @@ public class Main {
 
                 System.out.println("\n" + response.body());
 
-                return garagem.getIdGaragem();
+                ArrayList<String> lista = new ArrayList<>();
+                lista.add(String.valueOf(garagem.getIdGaragem()));
+                lista.add(garagem.getNome());
+
+                return lista;
             }
 
             Garagem.buscarGaragensNome(texto);
@@ -178,24 +181,27 @@ public class Main {
         String idEmpresa = informacoesUsuarios.get("fkEmpresa").getAsString();
 
         if(Uuid.verificarArquivoUuid()) {
-            String uuid = Uuid.buscarUuid();
+            String uuid = Uuid.buscarUuid().split(",")[0];
 
             HttpResponse<String> response = ApiClient.buscarServidorUUID(uuid);
 
             if(response.statusCode() == 403) {
-                long idGaragem = adicionarGaragem(idEmpresa);
+                long idGaragem = Long.getLong(adicionarGaragem(idEmpresa).getFirst());
                 adicionarServidor(idEmpresa, uuid, idGaragem);
             } else {
                 //atualizarServidor(uuid);
             }
         } else {
-            String uuid = Uuid.criarUuid();
+            ArrayList<String> lista = adicionarGaragem(idEmpresa);
 
-            long idGaragem = adicionarGaragem(idEmpresa);
+            long idGaragem = Long.parseLong(lista.get(0));
+            String uuid = Uuid.criarUuid(lista.get(1));
+
             adicionarServidor(idEmpresa, uuid, idGaragem);
         }
 
-        System.out.println("\nIniciando monitoramento do servidor...");
+        System.out.println("\nPara iniciar o monitoramento do servidor, aperte ENTER: ");
+        scanner.nextLine();
 
         SpTransApiClient apiSpTrans = new SpTransApiClient();
 
@@ -212,5 +218,7 @@ public class Main {
         JsonArray linhasOnibus = jsonOnibus.getAsJsonArray("l");
 
         listarLinhas(linhasOnibus);
+
+
     }
 }
