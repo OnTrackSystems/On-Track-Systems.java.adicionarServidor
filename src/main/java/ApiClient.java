@@ -4,8 +4,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ApiClient {
-    static String ipServidor = "13.220.58.95";
-    static String portaServidor = "3333";
+    static String ipServidor = "localhost";
+    static String portaServidor = "3334";
 
     public static HttpResponse<String> autenticarUsuario(String json) {
         try {
@@ -136,3 +136,4 @@ public class ApiClient {
         }
     }
 }
+
