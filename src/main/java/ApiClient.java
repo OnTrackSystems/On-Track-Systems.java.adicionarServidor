@@ -5,7 +5,7 @@ import java.net.http.HttpResponse;
 
 public class ApiClient {
     static String ipServidor = "localhost";
-    static String portaServidor = "3334";
+    static String portaServidor = "3333";
 
     public static HttpResponse<String> autenticarUsuario(String json) {
         try {

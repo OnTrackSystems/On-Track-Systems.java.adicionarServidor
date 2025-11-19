@@ -102,4 +102,12 @@ public class Garagem {
     public String getNome() {
         return this.nome;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
 }

@@ -1,5 +1,4 @@
 import com.google.gson.*;
-
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -80,6 +79,8 @@ public class Main {
                 ArrayList<String> lista = new ArrayList<>();
                 lista.add(String.valueOf(garagem.getIdGaragem()));
                 lista.add(garagem.getNome());
+                lista.add(String.valueOf(garagem.getLatitude()));
+                lista.add(String.valueOf(garagem.getLongitude()));
 
                 return lista;
             }
@@ -125,42 +126,6 @@ public class Main {
         System.out.println("\n" + response.body());
     }
 
-    public static boolean autenticarSpTrans(SpTransApiClient apiSpTrans) {
-        HttpResponse<String> response = apiSpTrans.autenticarUsuarioSpTrans();
-
-        return response.statusCode() == 200 && response.body().equals("true");
-    }
-
-    public static void listarLinhas(JsonArray linhasOnibus) {
-        for(JsonElement linhaElement : linhasOnibus) {
-            JsonObject linhaOnibus = linhaElement.getAsJsonObject();
-
-            String letreiro = linhaOnibus.get("c").getAsString();
-            String destino = linhaOnibus.get("lt1").getAsString();
-            int quantidadeVeiculos = linhaOnibus.get("qv").getAsInt();
-
-            System.out.println("Linha: " + letreiro);
-            System.out.println("Destino: " + destino);
-            System.out.println("Quantidade de Veículos: " + quantidadeVeiculos);
-
-            JsonArray veiculosArray = linhaOnibus.get("vs").getAsJsonArray();
-
-            System.out.println("  --- Veículos nesta linha ---");
-
-            for (JsonElement veiculoElement : veiculosArray) {
-                JsonObject veiculoObj = veiculoElement.getAsJsonObject();
-
-                int prefixo = veiculoObj.get("p").getAsInt();
-                double latitude = veiculoObj.get("py").getAsDouble();
-                double longitude = veiculoObj.get("px").getAsDouble();
-                String timestamp = veiculoObj.get("ta").getAsString();
-
-                System.out.println("    Prefixo: " + prefixo + " | Lat: " + latitude + " | Lon: " + longitude + " | Hora: " + timestamp);
-            }
-            System.out.println("------------------------------------");
-        }
-    }
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -195,30 +160,20 @@ public class Main {
             ArrayList<String> lista = adicionarGaragem(idEmpresa);
 
             long idGaragem = Long.parseLong(lista.get(0));
-            String uuid = Uuid.criarUuid(lista.get(1));
+            String nomeGaragem = lista.get(1);
+            Double latitude = Double.parseDouble(lista.get(2));
+            Double longitude = Double.parseDouble(lista.get(3));
+
+            String uuid = Uuid.criarUuid(nomeGaragem, latitude, longitude);
 
             adicionarServidor(idEmpresa, uuid, idGaragem);
         }
 
-        System.out.println("\nPara iniciar o monitoramento do servidor, aperte ENTER: ");
-        scanner.nextLine();
-
-        SpTransApiClient apiSpTrans = new SpTransApiClient();
-
-        boolean loginSpTrans = false;
-        while(!loginSpTrans) {
-            loginSpTrans = autenticarSpTrans(apiSpTrans);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt(); // Boa prática
         }
-
-        System.out.println("\n✅Login na API da SPTrans realizado com sucesso!\n");
-
-        HttpResponse<String> response = apiSpTrans.buscarPosicaoOnibus();
-
-        JsonObject jsonOnibus = JsonParser.parseString(response.body()).getAsJsonObject();
-        JsonArray linhasOnibus = jsonOnibus.getAsJsonArray("l");
-
-        listarLinhas(linhasOnibus);
-
-
     }
 }
