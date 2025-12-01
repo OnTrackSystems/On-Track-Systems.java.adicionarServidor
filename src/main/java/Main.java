@@ -97,10 +97,12 @@ public class Main {
         String continuar = scanner.nextLine();
 
         JsonObject jsonServidor = Servidor.capturarInformacoesComputador();
+        long tamanhoDisco = jsonServidor.get("qtdDisco").getAsLong();
 
         jsonServidor.addProperty("uuid", uuid);
         jsonServidor.addProperty("idEmpresa", idEmpresa);
         jsonServidor.addProperty("idGaragem", idGaragem);
+        jsonServidor.addProperty("tamanhoDisco", tamanhoDisco);
 
         String json = new Gson().toJson(jsonServidor);
 
@@ -164,7 +166,7 @@ public class Main {
             Double latitude = Double.parseDouble(lista.get(2));
             Double longitude = Double.parseDouble(lista.get(3));
 
-            String uuid = Uuid.criarUuid(nomeGaragem, latitude, longitude);
+            String uuid = Uuid.criarUuid(nomeGaragem, latitude, longitude, idGaragem);
 
             adicionarServidor(idEmpresa, uuid, idGaragem);
         }
